@@ -1,0 +1,427 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --bg-main: #FFFFFF;
+  --bg-card: #FFFFFF;
+  --border-color: #E2E8F0;
+  --text-main: #1E293B;
+  --text-bold: #0F172A;
+  --text-light: #64748B;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Category Colors */
+  --color-meus: #EF4444;
+  --color-conservos: #F59E0B;
+  --color-pessoais: #3B82F6;
+  --color-outros: #10B981;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Header Typography */
+.month-year h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-bold);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.month-year span {
+  font-weight: 300;
+  color: #CBD5E1;
+}
+
+/* Header Buttons */
+.btn-group-nav {
+  display: flex;
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 9999px;
+  padding: 0.25rem;
+  align-items: center;
+  box-shadow: var(--shadow);
+}
+
+.btn-nav-round {
+  background: transparent;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #64748B;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-nav-round:hover { background: #F1F5F9; color: var(--text-main); }
+
+.btn-hoje-text {
+  background: transparent;
+  color: #64748B;
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0 0.75rem;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-pill {
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #E2E8F0;
+  background: white;
+  color: #475569;
+  flex-shrink: 0;
+}
+
+.btn-pill-blue {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.btn-pill-blue:hover { background: var(--primary-hover); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+
+.btn-outline-red {
+  background: white;
+  color: #EF4444;
+  border: 1px solid #EF4444 !important;
+}
+
+.btn-outline-red:hover {
+  background: #FEF2F2;
+}
+
+/* Legenda */
+.legend-container {
+  display: flex;
+  gap: 2rem;
+  margin: 1.5rem 0;
+  padding-left: 0.5rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.05em;
+}
+
+.legend-dot { width: 12px; height: 12px; border-radius: 50%; }
+
+/* Calendar Grid */
+.calendar-card {
+  background: white;
+  border: 1px solid #F1F5F9;
+  border-radius: 1.5rem;
+  overflow-x: auto; /* Habilita o scroll horizontal se necessário */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-main-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  min-width: 800px; /* Garante espaço mínimo para as colunas não espremerem */
+}
+
+.weekday-label {
+  text-align: center;
+  padding: 1.25rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94A3B8;
+  letter-spacing: 0.1em;
+  background: #FCFCFD;
+  border-bottom: 1px solid #F1F5F9;
+}
+
+.day-box {
+  min-height: 140px;
+  border-right: 1px solid #F1F5F9;
+  border-bottom: 1px solid #F1F5F9;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.day-box:nth-child(7n) { border-right: none; }
+
+.day-num {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #94A3B8;
+  border-radius: 50%;
+  margin-bottom: 4px;
+}
+
+.day-box.is-today .day-num {
+  background: #2563EB;
+  color: white;
+}
+
+.day-box.not-curr-month .day-num { color: #E2E8F0; }
+
+.events-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  overflow-y: auto;
+  max-height: 100px;
+  padding-right: 2px;
+}
+
+/* Scrollbar sutil para o grid */
+.events-list::-webkit-scrollbar {
+  width: 3px;
+}
+.events-list::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+/* Event Tag in Grid */
+.event-item-grid {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 3px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* Modal Novo Compromisso */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-title { font-size: 1.5rem; font-weight: 600; color: #0F172A; }
+
+.category-group-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-meus);
+  margin: 1rem 0 0.5rem;
+  text-transform: uppercase;
+}
+
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.chip-btn {
+  background: white;
+  border: 1px solid #E2E8F0;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #94A3B8;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.chip-btn.selected {
+  border-color: currentColor;
+  background: #FFF5F5; /* Dynamic based on category */
+}
+
+/* Specific button styles */
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-field label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.form-input, .form-textarea {
+  border: 1px solid #E2E8F0;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  outline: none;
+  font-family: inherit;
+  font-size: 0.875rem;
+  color: #1E293B;
+  width: 100%;
+}
+
+.form-input:focus, .form-textarea:focus { border-color: var(--primary); }
+
+.event-item-grid {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px; /* Pill style */
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  margin-bottom: 3px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.event-title-span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+@media print {
+  @page {
+    size: landscape;
+    margin: 5mm;
+  }
+
+  body {
+    background: white !important;
+    padding: 0 !important;
+  }
+
+  #root {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Hide non-essential UI */
+  .btn-group-nav,
+  .header-controls,
+  .legend-container,
+  footer,
+  .btn-nav-round,
+  .btn-pill,
+  button {
+    display: none !important;
+  }
+
+  .month-year h1 {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .calendar-card {
+    border: 1px solid #E2E8F0 !important;
+    box-shadow: none !important;
+    border-radius: 0.25rem !important;
+    width: 100% !important;
+  }
+
+  .day-box {
+    min-height: 180px !important; /* Estica o layout para baixo conforme solicitado */
+    height: auto !important;
+    padding: 6px 4px !important;
+    gap: 4px !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+  }
+
+  .day-num {
+    margin-bottom: 6px !important;
+    font-size: 0.875rem !important;
+    width: 24px !important;
+    height: 24px !important;
+    font-weight: 700 !important;
+  }
+
+  .event-item-grid {
+    font-size: 0.7rem !important; /* Aumentado levemente para legibilidade com mais espaço */
+    padding: 2px 5px !important;
+    margin-bottom: 4px !important;
+    border: 1px solid #00000020 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    white-space: normal !important; /* Permite quebra se necessário com o novo espaço */
+  }
+
+  /* Force background colors in print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
