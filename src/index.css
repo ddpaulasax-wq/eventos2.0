@@ -170,14 +170,22 @@ body {
 }
 
 .day-box {
-  min-height: 140px;
+  min-height: 156px;
   border-right: 1px solid #F1F5F9;
   border-bottom: 1px solid #F1F5F9;
-  padding: 1rem;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
   cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.day-box:hover {
+  background-color: #F8FAFC !important;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .day-box:nth-child(7n) { border-right: none; }
@@ -205,35 +213,54 @@ body {
 .events-list {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  margin-top: 0.5rem;
-  overflow-y: auto;
-  max-height: 100px;
-  padding-right: 2px;
+  gap: 4px;
+  margin-top: 4px;
+  overflow-y: scroll; /* Força o scroll sempre visível */
+  max-height: 110px;
+  padding-right: 6px;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #CBD5E1 transparent; /* Firefox */
 }
 
-/* Scrollbar sutil para o grid */
+/* Scrollbar para Chrome/Safari/Edge */
 .events-list::-webkit-scrollbar {
-  width: 3px;
+  width: 4px;
+  display: block; /* Garante visibilidade */
 }
+
+.events-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
 .events-list::-webkit-scrollbar-thumb {
+  background: #E2E8F0;
+  border-radius: 10px;
+}
+
+.events-list::-webkit-scrollbar-thumb:hover {
   background: #CBD5E1;
-  border-radius: 4px;
 }
 
 /* Event Tag in Grid */
 .event-item-grid {
-  font-size: 0.7rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 9999px;
-  font-weight: 500;
+  font-size: 0.725rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   width: 100%;
-  margin-bottom: 3px;
+  margin-bottom: 2px;
   overflow: hidden;
   white-space: nowrap;
+  transition: transform 0.1s ease;
+  user-select: none;
+}
+
+.event-item-grid:hover {
+  transform: translateX(2px);
+  filter: brightness(0.95);
 }
 
 /* Modal Novo Compromisso */
@@ -333,19 +360,6 @@ body {
 
 .form-input:focus, .form-textarea:focus { border-color: var(--primary); }
 
-.event-item-grid {
-  font-size: 0.7rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 9999px; /* Pill style */
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  width: 100%;
-  margin-bottom: 3px;
-  overflow: hidden;
-  white-space: nowrap;
-}
 
 .event-title-span {
   overflow: hidden;
