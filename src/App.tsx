@@ -118,12 +118,17 @@ const App: React.FC = () => {
         // Update existing
         const { error } = await supabase
           .from('events')
-          .update({ title, description, color })
+          .update({ 
+            title, 
+            description, 
+            color,
+            date: selectedDate.toISOString() 
+          })
           .eq('id', editingEvent.id);
 
         if (error) throw error;
 
-        setEvents(events.map(e => e.id === editingEvent.id ? { ...e, title, description, color } : e));
+        setEvents(events.map(e => e.id === editingEvent.id ? { ...e, title, description, color, date: selectedDate } : e));
         setIsModalOpen(false);
         setEditingEvent(null);
         return;

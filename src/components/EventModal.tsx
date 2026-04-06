@@ -20,7 +20,7 @@ interface EventModalProps {
   onClose: () => void;
   selectedDate: Date;
   calendarMode: 'geral' | 'cultos';
-  onAddEvent: (title: string, description: string, color: string, recurrence: string) => void;
+  onAddEvent: (title: string, description: string, color: string, recurrence: string) => Promise<void>;
   onDelete: (id: string, groupId?: string, deleteAllSeries?: boolean) => void;
 }
 
@@ -39,6 +39,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   const [recurrence, setRecurrence] = useState('none');
   const [category, setCategory] = useState({ name: 'CULTO', color: '#EF4444' });
   const [isDeletingRecurrent, setIsDeletingRecurrent] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const defaultCategory = calendarMode === 'cultos' 
@@ -67,12 +68,14 @@ export const EventModal: React.FC<EventModalProps> = ({
       }
       setRecurrence('none');
       setIsDeletingRecurrent(false);
+      setIsSaving(false);
     } else {
       setDescription('');
       setTime('');
       setCategory(defaultCategory);
       setRecurrence('none');
       setIsDeletingRecurrent(false);
+      setIsSaving(false);
     }
   }, [editingEvent, isOpen, calendarMode]);
 
@@ -81,37 +84,46 @@ export const EventModal: React.FC<EventModalProps> = ({
   // Categorias que usam a descrição como título no calendário
   const descriptionAsTitle = ['EVENTOS PESSOAIS', 'OUTROS', 'CULTO ESPECIAL'];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedDesc = description.trim();
-    let displayCategory = category.name;
-    
-    if (category.name === 'OUTROS') {
-      displayCategory = 'OUTRO';
+    if (isSaving) return;
+
+    try {
+      setIsSaving(true);
+      const trimmedDesc = description.trim();
+      let displayCategory = category.name;
+      
+      if (category.name === 'OUTROS') {
+        displayCategory = 'OUTRO';
+      }
+
+      let finalTitle = '';
+      if (category.name === 'EVENTOS PESSOAIS' || category.name === 'CULTO ESPECIAL') {
+        finalTitle = trimmedDesc || category.name;
+      } else if (calendarMode === 'cultos') {
+        // No modo cultos, o título principal é apenas a descrição para economizar espaço
+        finalTitle = trimmedDesc || displayCategory;
+      } else {
+        finalTitle = trimmedDesc ? `${displayCategory} - ${trimmedDesc}` : displayCategory;
+      }
+
+      if (time) {
+        finalTitle = `${time} - ${finalTitle}`;
+      }
+
+      // Passamos a descrição completa para o banco, mas a exibição principal será o título formatado
+      await onAddEvent(finalTitle, trimmedDesc, category.color, recurrence);
+
+      setDescription('');
+      setTime('');
+      setRecurrence('none');
+      setIsDeletingRecurrent(false);
+      onClose();
+    } catch (error) {
+      console.error('Erro no submit:', error);
+    } finally {
+      setIsSaving(false);
     }
-
-    let finalTitle = '';
-    if (category.name === 'EVENTOS PESSOAIS' || category.name === 'CULTO ESPECIAL') {
-      finalTitle = trimmedDesc || category.name;
-    } else if (calendarMode === 'cultos') {
-      // No modo cultos, o título principal é apenas a descrição para economizar espaço
-      finalTitle = trimmedDesc || displayCategory;
-    } else {
-      finalTitle = trimmedDesc ? `${displayCategory} - ${trimmedDesc}` : displayCategory;
-    }
-
-    if (time) {
-      finalTitle = `${time} - ${finalTitle}`;
-    }
-
-    // Passamos a descrição completa para o banco, mas a exibição principal será o título formatado
-    onAddEvent(finalTitle, trimmedDesc, category.color, recurrence);
-
-    setDescription('');
-    setTime('');
-    setRecurrence('none');
-    setIsDeletingRecurrent(false);
-    onClose();
   };
 
   // No modo cultos: força categorias específicas (CULTO tradicional e CULTO ESPECIAL)
@@ -332,10 +344,16 @@ export const EventModal: React.FC<EventModalProps> = ({
             )}
             <button 
               type="submit" 
-              className="btn-pill btn-pill-blue" 
-              style={{ flex: 2, justifyContent: 'center' }}
+              disabled={isSaving}
+              className={`btn-pill ${isSaving ? 'btn-outline-red' : 'btn-pill-blue'}`}
+              style={{ 
+                flex: 2, 
+                justifyContent: 'center',
+                opacity: isSaving ? 0.7 : 1,
+                cursor: isSaving ? 'not-allowed' : 'pointer'
+              }}
             >
-              Salvar
+              {isSaving ? 'Salvando...' : 'Salvar'}
             </button>
           </div>
         </form>
