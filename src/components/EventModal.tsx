@@ -21,7 +21,7 @@ interface EventModalProps {
   selectedDate: Date;
   calendarMode: 'geral' | 'cultos';
   onAddEvent: (title: string, description: string, color: string, recurrence: string) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string, groupId?: string, deleteAllSeries?: boolean) => void;
 }
 
 export const EventModal: React.FC<EventModalProps> = ({ 
@@ -38,6 +38,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   const [time, setTime] = useState('');
   const [recurrence, setRecurrence] = useState('none');
   const [category, setCategory] = useState({ name: 'CULTO', color: '#EF4444' });
+  const [isDeletingRecurrent, setIsDeletingRecurrent] = useState(false);
 
   useEffect(() => {
     const defaultCategory = calendarMode === 'cultos' 
@@ -65,11 +66,13 @@ export const EventModal: React.FC<EventModalProps> = ({
         setCategory({ name: editingEvent.title.includes(' - ') ? editingEvent.title.split(' - ').pop()! : editingEvent.title, color: editingEvent.color });
       }
       setRecurrence('none');
+      setIsDeletingRecurrent(false);
     } else {
       setDescription('');
       setTime('');
       setCategory(defaultCategory);
       setRecurrence('none');
+      setIsDeletingRecurrent(false);
     }
   }, [editingEvent, isOpen, calendarMode]);
 
@@ -107,6 +110,7 @@ export const EventModal: React.FC<EventModalProps> = ({
     setDescription('');
     setTime('');
     setRecurrence('none');
+    setIsDeletingRecurrent(false);
     onClose();
   };
 
@@ -288,14 +292,43 @@ export const EventModal: React.FC<EventModalProps> = ({
 
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
             {editingEvent && (
-              <button 
-                type="button" 
-                className="btn-pill btn-outline-red" 
-                style={{ flex: 1, justifyContent: 'center' }}
-                onClick={() => onDelete(editingEvent.id)}
-              >
-                Excluir
-              </button>
+              <div style={{ flex: 1, display: 'flex', gap: '0.5rem' }}>
+                {isDeletingRecurrent ? (
+                  <>
+                    <button 
+                      type="button" 
+                      className="btn-pill btn-outline-red" 
+                      style={{ flex: 1, padding: '0.75rem 0.5rem', fontSize: '0.75rem' }}
+                      onClick={() => onDelete(editingEvent.id, undefined, false)}
+                    >
+                      Apenas este
+                    </button>
+                    <button 
+                      type="button" 
+                      className="btn-pill btn-pill-blue" 
+                      style={{ flex: 1, padding: '0.75rem 0.5rem', fontSize: '0.75rem', background: '#EF4444' }}
+                      onClick={() => onDelete(editingEvent.id, editingEvent.groupId, true)}
+                    >
+                      Toda série
+                    </button>
+                  </>
+                ) : (
+                  <button 
+                    type="button" 
+                    className="btn-pill btn-outline-red" 
+                    style={{ flex: 1, justifyContent: 'center' }}
+                    onClick={() => {
+                      if (editingEvent.groupId) {
+                        setIsDeletingRecurrent(true);
+                      } else {
+                        onDelete(editingEvent.id);
+                      }
+                    }}
+                  >
+                    Excluir
+                  </button>
+                )}
+              </div>
             )}
             <button 
               type="submit" 

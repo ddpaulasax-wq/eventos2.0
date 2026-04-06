@@ -82,16 +82,28 @@ const App: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleDeleteEvent = async (id: string) => {
+  const handleDeleteEvent = async (id: string, groupId?: string, deleteAll: boolean = false) => {
     try {
-      const { error } = await supabase
-        .from('events')
-        .delete()
-        .eq('id', id);
+      if (deleteAll && groupId) {
+        const { error } = await supabase
+          .from('events')
+          .delete()
+          .eq('group_id', groupId);
 
-      if (error) throw error;
+        if (error) throw error;
 
-      setEvents(events.filter(e => e.id !== id));
+        setEvents(events.filter(e => e.groupId !== groupId));
+      } else {
+        const { error } = await supabase
+          .from('events')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        setEvents(events.filter(e => e.id !== id));
+      }
+
       setIsModalOpen(false);
       setEditingEvent(null);
     } catch (error) {
