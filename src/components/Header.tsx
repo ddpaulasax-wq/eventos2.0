@@ -131,21 +131,23 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="legend-container">
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: 'var(--color-meus)' }}></div>
-          MEUS EVENTOS
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: 'var(--color-conservos)' }}></div>
-          EVENTOS DOS CONSERVOS
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: 'var(--color-outros)' }}></div>
-          OUTROS
-        </div>
+            <div className="legend-item">
+              <div className="legend-dot" style={{ background: 'var(--color-meus)' }}></div>
+              MEUS EVENTOS
+            </div>
+            <div className="legend-item">
+              <div className="legend-dot" style={{ background: 'var(--color-conservos)' }}></div>
+              EVENTOS DOS CONSERVOS
+            </div>
+            <div className="legend-item">
+              <div className="legend-dot" style={{ background: 'var(--color-pessoais)' }}></div>
+              PESSOAIS
+            </div>
+            <div className="legend-item">
+              <div className="legend-dot" style={{ background: 'var(--color-outros)' }}></div>
+              OUTROS / EVENTO
+            </div>
       </div>
     </header>
   );
 };
-
-// End of file

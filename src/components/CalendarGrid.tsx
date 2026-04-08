@@ -51,31 +51,29 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   const weekDays = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 
   const formatTitle = (event: Event) => {
-    let title = event.title;
+    // 1. Definimos o que queremos esconder (letras maiúsculas para comparação segura)
+    const toHide = ['OUTRO', 'OUTROS', 'EVENTO', 'CULTO', 'CULTOS', 'PESSOAL', 'PESSOAIS', 'MEUS EVENTOS', 'ENSAIO', 'GEM', 'REUNIÃO', 'SECRETARIA'];
     
-    // Palavras-chave de categoria para remover
-    const categoryWords = '(OUTRO|OUTROS|CULTO|CULTOS|PESSOAL|PESSOAIS|MEUS EVENTOS|ENSAIO|GEM|REUNIÃO|SECRETARIA)';
-    // Suporta diferentes tipos de traços (hífen, en-dash, em-dash) e múltiplos espaços
-    const separator = '\\s*[\\-–—]\\s*';
-    const timePattern = '^(\\d{2}:\\d{2})';
+    // 2. Quebramos o título por qualquer tipo de traço com espaços
+    const parts = event.title.split(/\s*[\-–—]\s*/);
+    
+    // 3. Filtramos as partes
+    const filtered = parts.filter((part, index) => {
+      const p = part.trim().toUpperCase();
+      // Sempre mantém se for a primeira parte e for um horário (ex: 15:00)
+      if (index === 0 && /^\d{1,2}:\d{2}$/.test(p)) return true;
+      // Remove se for uma palavra da lista de categorias
+      if (toHide.includes(p)) return false;
+      // Remove se a parte for vazia
+      if (!p) return false;
+      return true;
+    });
 
-    // 1. Remove prefixo APÓS o horário: "19:30 - OUTRO - Texto" -> "19:30 - Texto"
-    const regexWithTime = new RegExp(`${timePattern}${separator}${categoryWords}${separator}`, 'i');
-    title = title.replace(regexWithTime, '$1 - ');
-    
-    // 2. Remove prefixo no INÍCIO: "OUTRO - Texto" -> "Texto"
-    const regexNoTime = new RegExp(`^${categoryWords}${separator}`, 'i');
-    title = title.replace(regexNoTime, '');
-    
-    // 3. Limpezas extras específicas para o modo Cultos
-    if (event.color === '#000000') {
-      title = title.replace(new RegExp(`${separator}CULTO${separator}`, 'g'), ' - ')
-                   .replace(new RegExp(`${separator}CULTO$`, 'g'), '')
-                   .replace(/^CULTO:\s*/i, '')
-                   .replace(/^CULTO$/i, 'CULTO');
-    }
+    // 4. Se o resultado for vazio (ex: evento era só "OUTRO"), retorna o título original como fallback
+    if (filtered.length === 0) return event.title;
 
-    return title;
+    // 5. Junta tudo com o separador padrão
+    return filtered.join(' - ');
   };
 
   return (

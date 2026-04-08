@@ -82,7 +82,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   if (!isOpen) return null;
 
   // Categorias que usam a descrição como título no calendário
-  const descriptionAsTitle = ['MEUS EVENTOS', 'EVENTOS PESSOAIS', 'OUTROS', 'CULTO ESPECIAL'];
+  const descriptionAsTitle = ['MEUS EVENTOS', 'EVENTOS PESSOAIS', 'OUTROS', 'EVENTO', 'CULTO ESPECIAL'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,6 +133,7 @@ export const EventModal: React.FC<EventModalProps> = ({
     { label: 'EVENTOS DOS CONSERVOS', color: '#F59E0B', items: ['CULTO', 'ENSAIO', 'REUNIÃO'], singleButton: false },
     { label: 'EVENTOS PESSOAIS', color: '#3B82F6', items: [], singleButton: true },
     { label: 'OUTROS', color: '#10B981', items: [], singleButton: true },
+    { label: 'EVENTO', color: '#10B981', items: [], singleButton: true },
   ];
 
   return (
