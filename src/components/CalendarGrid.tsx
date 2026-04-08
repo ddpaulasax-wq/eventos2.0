@@ -50,14 +50,44 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   const weekDays = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 
-  const formatTitle = (title: string) => {
-    if (calendarMode !== 'cultos') return title;
-    // Remove " - CULTO - ", "CULTO - ", " - CULTO", "CULTO: " do título para economizar espaço
-    return title.replace(/ - CULTO - /g, ' - ')
-                .replace(/^CULTO - /g, '')
-                .replace(/ - CULTO$/g, '')
-                .replace(/^CULTO: /g, '')
-                .replace(/^CULTO$/, 'CULTO');
+  const formatTitle = (event: Event) => {
+    let title = event.title;
+    
+    // Se for Culto tradicional (Preto), aplicamos as limpezas de palavras-chave
+    if (event.color === '#000000') {
+      return title.replace(/ - CULTO - /g, ' - ')
+                  .replace(/^CULTO - /g, '')
+                  .replace(/ - CULTO$/g, '')
+                  .replace(/^CULTO: /g, '')
+                  .replace(/^CULTO$/, 'CULTO');
+    }
+
+    // Para Meus Eventos (Vermelho), Pessoais (Azul) e Outros (Verde/Amarelo)
+    // Tentamos simplificar para "Horário - Descrição" ou apenas "Descrição"
+    const coloredCategories = ['#EF4444', '#3B82F6', '#F59E0B', '#10B981'];
+    if (coloredCategories.includes(event.color.toUpperCase())) {
+      // Se tiver descrição, e o título for no formato "Horário - Categoria - Descrição"
+      // ou "Categoria - Descrição", simplificamos.
+      
+      const parts = title.split(' - ');
+      
+      // Caso 1: "HH:MM - CATEGORIA - DESCRIÇÃO" -> "HH:MM - DESCRIÇÃO"
+      if (parts.length >= 3 && /^\d{2}:\d{2}$/.test(parts[0])) {
+        return `${parts[0]} - ${parts.slice(2).join(' - ')}`;
+      }
+      
+      // Caso 2: "HH:MM - DESCRIÇÃO" -> Mantém como está (já está limpo)
+      if (parts.length === 2 && /^\d{2}:\d{2}$/.test(parts[0])) {
+        return title;
+      }
+
+      // Caso 3: "CATEGORIA - DESCRIÇÃO" -> "DESCRIÇÃO"
+      if (parts.length >= 2 && !/^\d{2}:\d{2}$/.test(parts[0])) {
+        return parts.slice(1).join(' - ');
+      }
+    }
+
+    return title;
   };
 
   return (
@@ -107,7 +137,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
                     <div className="event-title-span" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       {event.groupId && <Repeat size={10} style={{ flexShrink: 0 }} />}
                       <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {formatTitle(event.title)}
+                        {formatTitle(event)}
                       </span>
                     </div>
                   </div>

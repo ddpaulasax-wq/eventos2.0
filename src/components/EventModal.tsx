@@ -82,7 +82,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   if (!isOpen) return null;
 
   // Categorias que usam a descrição como título no calendário
-  const descriptionAsTitle = ['EVENTOS PESSOAIS', 'OUTROS', 'CULTO ESPECIAL'];
+  const descriptionAsTitle = ['MEUS EVENTOS', 'EVENTOS PESSOAIS', 'OUTROS', 'CULTO ESPECIAL'];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
