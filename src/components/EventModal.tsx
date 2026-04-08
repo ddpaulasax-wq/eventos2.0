@@ -98,13 +98,12 @@ export const EventModal: React.FC<EventModalProps> = ({
       }
 
       let finalTitle = '';
-      if (category.name === 'EVENTOS PESSOAIS' || category.name === 'CULTO ESPECIAL') {
-        finalTitle = trimmedDesc || category.name;
-      } else if (calendarMode === 'cultos') {
-        // No modo cultos, o título principal é apenas a descrição para economizar espaço
-        finalTitle = trimmedDesc || displayCategory;
+      if (trimmedDesc) {
+        // Se houver descrição, ela será o título principal (limpo)
+        finalTitle = trimmedDesc;
       } else {
-        finalTitle = trimmedDesc ? `${displayCategory} - ${trimmedDesc}` : displayCategory;
+        // Fallback para o nome da categoria se a descrição for vazia
+        finalTitle = displayCategory;
       }
 
       if (time) {

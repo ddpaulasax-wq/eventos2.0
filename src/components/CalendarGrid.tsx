@@ -53,38 +53,22 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   const formatTitle = (event: Event) => {
     let title = event.title;
     
-    // Se for Culto tradicional (Preto), aplicamos as limpezas de palavras-chave
+    // Regex para identificar e remover prefixos de categoria (OUTRO, CULTO, etc.)
+    // Suporta: "19:30 - OUTRO - Titulo" -> "19:30 - Titulo"
+    // Ou: "OUTRO - Titulo" -> "Titulo"
+    
+    // 1. Tenta remover prefixos após o horário: "HH:MM - [PREFIXO] - "
+    title = title.replace(/^(\d{2}:\d{2} - )(OUTRO|OUTROS|CULTO|CULTOS|PESSOAL|PESSOAIS|MEUS EVENTOS|ENSAIO|GEM|REUNIÃO) - /i, '$1');
+    
+    // 2. Tenta remover prefixos no início do texto (sem horário): "[PREFIXO] - "
+    title = title.replace(/^(OUTRO|OUTROS|CULTO|CULTOS|PESSOAL|PESSOAIS|MEUS EVENTOS|ENSAIO|GEM|REUNIÃO) - /i, '');
+    
+    // 3. Limpezas extras específicas para o modo Cultos
     if (event.color === '#000000') {
-      return title.replace(/ - CULTO - /g, ' - ')
-                  .replace(/^CULTO - /g, '')
-                  .replace(/ - CULTO$/g, '')
-                  .replace(/^CULTO: /g, '')
-                  .replace(/^CULTO$/, 'CULTO');
-    }
-
-    // Para Meus Eventos (Vermelho), Pessoais (Azul) e Outros (Verde/Amarelo)
-    // Tentamos simplificar para "Horário - Descrição" ou apenas "Descrição"
-    const coloredCategories = ['#EF4444', '#3B82F6', '#F59E0B', '#10B981'];
-    if (coloredCategories.includes(event.color.toUpperCase())) {
-      // Se tiver descrição, e o título for no formato "Horário - Categoria - Descrição"
-      // ou "Categoria - Descrição", simplificamos.
-      
-      const parts = title.split(' - ');
-      
-      // Caso 1: "HH:MM - CATEGORIA - DESCRIÇÃO" -> "HH:MM - DESCRIÇÃO"
-      if (parts.length >= 3 && /^\d{2}:\d{2}$/.test(parts[0])) {
-        return `${parts[0]} - ${parts.slice(2).join(' - ')}`;
-      }
-      
-      // Caso 2: "HH:MM - DESCRIÇÃO" -> Mantém como está (já está limpo)
-      if (parts.length === 2 && /^\d{2}:\d{2}$/.test(parts[0])) {
-        return title;
-      }
-
-      // Caso 3: "CATEGORIA - DESCRIÇÃO" -> "DESCRIÇÃO"
-      if (parts.length >= 2 && !/^\d{2}:\d{2}$/.test(parts[0])) {
-        return parts.slice(1).join(' - ');
-      }
+      title = title.replace(/ - CULTO - /g, ' - ')
+                   .replace(/ - CULTO$/g, '')
+                   .replace(/^CULTO: /g, '')
+                   .replace(/^CULTO$/, 'CULTO');
     }
 
     return title;
