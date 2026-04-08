@@ -44,7 +44,9 @@ const App: React.FC = () => {
       const { data, error } = await supabase
         .from('events')
         .select('*')
-        .eq('calendar_type', calendarMode);
+        .eq('calendar_type', calendarMode)
+        .order('date', { ascending: true })
+        .range(0, 2000); // Garante que todos os registros (incluindo os 3 meses de cultos) sejam carregados
 
       if (error) throw error;
 
