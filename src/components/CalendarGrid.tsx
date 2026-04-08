@@ -53,22 +53,26 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   const formatTitle = (event: Event) => {
     let title = event.title;
     
-    // Regex para identificar e remover prefixos de categoria (OUTRO, CULTO, etc.)
-    // Suporta: "19:30 - OUTRO - Titulo" -> "19:30 - Titulo"
-    // Ou: "OUTRO - Titulo" -> "Titulo"
+    // Palavras-chave de categoria para remover
+    const categoryWords = '(OUTRO|OUTROS|CULTO|CULTOS|PESSOAL|PESSOAIS|MEUS EVENTOS|ENSAIO|GEM|REUNIÃO|SECRETARIA)';
+    // Suporta diferentes tipos de traços (hífen, en-dash, em-dash) e múltiplos espaços
+    const separator = '\\s*[\\-–—]\\s*';
+    const timePattern = '^(\\d{2}:\\d{2})';
+
+    // 1. Remove prefixo APÓS o horário: "19:30 - OUTRO - Texto" -> "19:30 - Texto"
+    const regexWithTime = new RegExp(`${timePattern}${separator}${categoryWords}${separator}`, 'i');
+    title = title.replace(regexWithTime, '$1 - ');
     
-    // 1. Tenta remover prefixos após o horário: "HH:MM - [PREFIXO] - "
-    title = title.replace(/^(\d{2}:\d{2} - )(OUTRO|OUTROS|CULTO|CULTOS|PESSOAL|PESSOAIS|MEUS EVENTOS|ENSAIO|GEM|REUNIÃO) - /i, '$1');
-    
-    // 2. Tenta remover prefixos no início do texto (sem horário): "[PREFIXO] - "
-    title = title.replace(/^(OUTRO|OUTROS|CULTO|CULTOS|PESSOAL|PESSOAIS|MEUS EVENTOS|ENSAIO|GEM|REUNIÃO) - /i, '');
+    // 2. Remove prefixo no INÍCIO: "OUTRO - Texto" -> "Texto"
+    const regexNoTime = new RegExp(`^${categoryWords}${separator}`, 'i');
+    title = title.replace(regexNoTime, '');
     
     // 3. Limpezas extras específicas para o modo Cultos
     if (event.color === '#000000') {
-      title = title.replace(/ - CULTO - /g, ' - ')
-                   .replace(/ - CULTO$/g, '')
-                   .replace(/^CULTO: /g, '')
-                   .replace(/^CULTO$/, 'CULTO');
+      title = title.replace(new RegExp(`${separator}CULTO${separator}`, 'g'), ' - ')
+                   .replace(new RegExp(`${separator}CULTO$`, 'g'), '')
+                   .replace(/^CULTO:\s*/i, '')
+                   .replace(/^CULTO$/i, 'CULTO');
     }
 
     return title;
