@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, Plus, Download, Printer } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Download, Printer, Wand2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
@@ -12,6 +12,7 @@ interface HeaderProps {
   onAddEvent: () => void;
   calendarMode: 'geral' | 'cultos';
   onToggleMode: () => void;
+  onAutoRegister: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({ 
@@ -21,7 +22,8 @@ export const Header: React.FC<HeaderProps> = ({
   onToday,
   onAddEvent,
   calendarMode,
-  onToggleMode
+  onToggleMode,
+  onAutoRegister
 }) => {
   return (
     <header className="fade-in" style={{ marginBottom: '2rem' }}>
@@ -103,11 +105,23 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <Printer size={16} /> Imprimir
           </button>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <button className="btn-pill btn-pill-blue" onClick={onAddEvent}>
-              <Plus size={20} /> Novo
-            </button>
-            <span style={{ fontSize: '0.625rem', color: '#CBD5E1', marginTop: '4px', textAlign: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              {calendarMode === 'cultos' && (
+                <button 
+                  className="btn-pill" 
+                  onClick={onAutoRegister}
+                  style={{ background: '#1E293B', color: 'white', borderColor: '#1E293B' }}
+                  title="Cadastrar cultos fixos para este mês"
+                >
+                  <Wand2 size={18} /> Autocadastro
+                </button>
+              )}
+              <button className="btn-pill btn-pill-blue" onClick={onAddEvent}>
+                <Plus size={20} /> Novo
+              </button>
+            </div>
+            <span style={{ fontSize: '0.625rem', color: '#CBD5E1', textAlign: 'center' }}>
               Otimizado para impressão em modo Paisagem.<br/>Se a impressão não abrir, use uma nova aba.
             </span>
           </div>
@@ -133,4 +147,3 @@ export const Header: React.FC<HeaderProps> = ({
 };
 
 // End of file
-

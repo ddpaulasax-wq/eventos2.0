@@ -5,12 +5,19 @@ import {
   addDays, 
   addWeeks, 
   addYears,
-  parseISO
+  parseISO,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  getDay,
+  format
 } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import { Header } from './components/Header';
 import { CalendarGrid } from './components/CalendarGrid';
 import { EventModal } from './components/EventModal';
 import { supabase } from './lib/supabase';
+import { FIXED_CULTOS } from './constants/fixedEvents';
 
 interface Event {
   id: string;
@@ -114,6 +121,72 @@ const App: React.FC = () => {
     }
   };
 
+  const handleAutoRegisterMonth = async () => {
+    // 1. Verificar se o mês já tem cultos
+    const monthStart = startOfMonth(currentDate);
+    const monthEnd = endOfMonth(currentDate);
+    
+    const hasCultosInMonth = events.some(e => 
+      e.calendarType === 'cultos' && 
+      e.date >= monthStart && 
+      e.date <= monthEnd
+    );
+
+    if (hasCultosInMonth) {
+      alert('Este mês já possui cultos cadastrados!');
+      return;
+    }
+
+    if (!confirm(`Deseja cadastrar automaticamente todos os cultos fixos para ${format(currentDate, 'MMMM', { locale: ptBR })}?`)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
+      const newEventsData: any[] = [];
+
+      daysInMonth.forEach(day => {
+        const dayOfWeek = getDay(day);
+        const fixedForDay = FIXED_CULTOS.filter(f => f.dayOfWeek === dayOfWeek);
+
+        fixedForDay.forEach(config => {
+          const groupId = Math.random().toString(36).substr(2, 9);
+          // Usando a lógica de 03:00 UTC para representar 00:00 local (BRT)
+          const isoDate = new Date(day);
+          isoDate.setUTCHours(3, 0, 0, 0);
+
+          config.locals.forEach(local => {
+            newEventsData.push({
+              group_id: groupId,
+              title: `${config.time} - ${local}`,
+              description: local,
+              date: isoDate.toISOString(),
+              color: '#000000',
+              calendar_type: 'cultos'
+            });
+          });
+        });
+      });
+
+      if (newEventsData.length === 0) {
+        alert('Nenhum culto fixo encontrado para este período.');
+        return;
+      }
+
+      const { error } = await supabase.from('events').insert(newEventsData);
+      if (error) throw error;
+
+      await fetchEvents();
+      alert('Cultos cadastrados com sucesso!');
+    } catch (error) {
+      console.error('Error in auto-register:', error);
+      alert('Erro ao realizar autocadastro.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleAddEvent = async (title: string, description: string, color: string, recurrence: string = 'none') => {
     try {
       if (editingEvent) {
@@ -196,6 +269,7 @@ const App: React.FC = () => {
         onAddEvent={() => setIsModalOpen(true)}
         calendarMode={calendarMode}
         onToggleMode={() => setCalendarMode(m => m === 'geral' ? 'cultos' : 'geral')}
+        onAutoRegister={handleAutoRegisterMonth}
       />
 
       <main className="flex-1 flex flex-col gap-6">
