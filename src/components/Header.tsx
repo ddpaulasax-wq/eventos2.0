@@ -107,16 +107,18 @@ export const Header: React.FC<HeaderProps> = ({
           </button>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {calendarMode === 'cultos' && (
-                <button 
-                  className="btn-pill" 
-                  onClick={onAutoRegister}
-                  style={{ background: '#1E293B', color: 'white', borderColor: '#1E293B' }}
-                  title="Cadastrar cultos fixos para este mês"
-                >
-                  <Wand2 size={18} /> Autocadastro
-                </button>
-              )}
+              <button 
+                className="btn-pill" 
+                onClick={onAutoRegister}
+                style={{ 
+                  background: calendarMode === 'cultos' ? '#1E293B' : '#EF4444', 
+                  color: 'white', 
+                  borderColor: calendarMode === 'cultos' ? '#1E293B' : '#EF4444' 
+                }}
+                title={calendarMode === 'cultos' ? "Cadastrar cultos fixos para este mês" : "Cadastrar eventos musicais fixos"}
+              >
+                <Wand2 size={18} /> Autocadastro
+              </button>
               <button className="btn-pill btn-pill-blue" onClick={onAddEvent}>
                 <Plus size={20} /> Novo
               </button>

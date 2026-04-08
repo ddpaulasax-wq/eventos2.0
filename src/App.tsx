@@ -17,7 +17,7 @@ import { Header } from './components/Header';
 import { CalendarGrid } from './components/CalendarGrid';
 import { EventModal } from './components/EventModal';
 import { supabase } from './lib/supabase';
-import { FIXED_CULTOS } from './constants/fixedEvents';
+import { FIXED_CULTOS, FIXED_GERAL } from './constants/fixedEvents';
 
 interface Event {
   id: string;
@@ -122,22 +122,23 @@ const App: React.FC = () => {
   };
 
   const handleAutoRegisterMonth = async () => {
-    // 1. Verificar se o mês já tem cultos
+    // 1. Verificar se o mês já tem eventos do tipo atual
     const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(currentDate);
     
-    const hasCultosInMonth = events.some(e => 
-      e.calendarType === 'cultos' && 
+    const hasEventsInMonth = events.some(e => 
+      e.calendarType === calendarMode && 
       e.date >= monthStart && 
       e.date <= monthEnd
     );
 
-    if (hasCultosInMonth) {
-      alert('Este mês já possui cultos cadastrados!');
+    if (hasEventsInMonth) {
+      alert(`Este mês já possui eventos de ${calendarMode === 'cultos' ? 'culto' : 'música'} cadastrados!`);
       return;
     }
 
-    if (!confirm(`Deseja cadastrar automaticamente todos os cultos fixos para ${format(currentDate, 'MMMM', { locale: ptBR })}?`)) {
+    const typeLabel = calendarMode === 'cultos' ? 'cultos fixos' : 'eventos musicais fixos';
+    if (!confirm(`Deseja cadastrar automaticamente todos os ${typeLabel} para ${format(currentDate, 'MMMM', { locale: ptBR })}?`)) {
       return;
     }
 
@@ -145,10 +146,12 @@ const App: React.FC = () => {
       setLoading(true);
       const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
       const newEventsData: any[] = [];
+      const configList = calendarMode === 'cultos' ? FIXED_CULTOS : FIXED_GERAL;
+      const eventColor = calendarMode === 'cultos' ? '#000000' : '#EF4444';
 
       daysInMonth.forEach(day => {
         const dayOfWeek = getDay(day);
-        const fixedForDay = FIXED_CULTOS.filter(f => f.dayOfWeek === dayOfWeek);
+        const fixedForDay = configList.filter(f => f.dayOfWeek === dayOfWeek);
 
         fixedForDay.forEach(config => {
           const groupId = Math.random().toString(36).substr(2, 9);
@@ -162,15 +165,15 @@ const App: React.FC = () => {
               title: `${config.time} - ${local}`,
               description: local,
               date: isoDate.toISOString(),
-              color: '#000000',
-              calendar_type: 'cultos'
+              color: eventColor,
+              calendar_type: calendarMode
             });
           });
         });
       });
 
       if (newEventsData.length === 0) {
-        alert('Nenhum culto fixo encontrado para este período.');
+        alert('Nenhum evento fixo encontrado para este período.');
         return;
       }
 
@@ -178,7 +181,7 @@ const App: React.FC = () => {
       if (error) throw error;
 
       await fetchEvents();
-      alert('Cultos cadastrados com sucesso!');
+      alert('Eventos cadastrados com sucesso!');
     } catch (error) {
       console.error('Error in auto-register:', error);
       alert('Erro ao realizar autocadastro.');
