@@ -387,7 +387,6 @@ body {
   /* Hide non-essential UI */
   .btn-group-nav,
   .header-controls,
-  .legend-container,
   footer,
   .btn-nav-round,
   .btn-pill,
@@ -397,7 +396,25 @@ body {
 
   .month-year h1 {
     font-size: 1.5rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 0.2rem !important;
+  }
+
+  /* Mostrar e ajustar a legenda na impressão */
+  .legend-container {
+    display: flex !important;
+    gap: 1.5rem !important;
+    margin: 0.5rem 0 1rem 0 !important;
+    padding: 0 !important;
+    justify-content: flex-start !important;
+  }
+
+  .legend-item {
+    font-size: 0.65rem !important;
+  }
+
+  .legend-dot {
+    width: 10px !important;
+    height: 10px !important;
   }
 
   .calendar-card {
@@ -428,10 +445,10 @@ body {
     padding: 3px 6px !important;
     margin-bottom: 5px !important;
     border: 1px solid #00000020 !important;
-    background: transparent !important;
-    color: inherit !important;
+    /* Removido background: transparent e color: inherit para que a cor nativa funcione */
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+    color-adjust: exact !important;
     white-space: normal !important; /* Permite quebra se necessário */
     word-break: break-word !important;
     line-height: 1.2 !important;
