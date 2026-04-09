@@ -49,8 +49,8 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
   const weekDays = ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'];
 
   const formatTitle = (event: Event) => {
-    // 1. Definimos o que queremos esconder (letras maiúsculas para comparação segura)
-    const toHide = ['OUTRO', 'OUTROS', 'EVENTO', 'CULTO', 'CULTOS', 'PESSOAL', 'PESSOAIS', 'MEUS EVENTOS', 'ENSAIO', 'GEM', 'REUNIÃO', 'SECRETARIA'];
+    // 1. Definimos o que queremos esconder (apenas nomes de categorias)
+    const toHide = ['OUTRO', 'OUTROS', 'EVENTO', 'CULTO', 'CULTOS', 'PESSOAL', 'PESSOAIS', 'MEUS EVENTOS', 'EVENTOS DOS CONSERVOS'];
     
     // 2. Quebramos o título por qualquer tipo de traço com espaços
     const parts = event.title.split(/\s*[\-–—]\s*/);
