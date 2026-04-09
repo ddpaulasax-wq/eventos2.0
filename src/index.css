@@ -413,24 +413,29 @@ body {
     padding: 6px 4px !important;
     gap: 4px !important;
     border-bottom: 1px solid #E2E8F0 !important;
+    overflow: visible !important;
   }
 
-  .day-num {
-    margin-bottom: 6px !important;
-    font-size: 0.875rem !important;
-    width: 24px !important;
-    height: 24px !important;
-    font-weight: 700 !important;
+  .events-list {
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
+    padding-right: 0 !important;
   }
 
   .event-item-grid {
-    font-size: 0.7rem !important; /* Aumentado levemente para legibilidade com mais espaço */
-    padding: 2px 5px !important;
-    margin-bottom: 4px !important;
+    font-size: 0.725rem !important; /* Aumentado levemente para legibilidade */
+    padding: 3px 6px !important;
+    margin-bottom: 5px !important;
     border: 1px solid #00000020 !important;
+    background: transparent !important;
+    color: inherit !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
-    white-space: normal !important; /* Permite quebra se necessário com o novo espaço */
+    white-space: normal !important; /* Permite quebra se necessário */
+    word-break: break-word !important;
+    line-height: 1.2 !important;
+    height: auto !important;
   }
 
   /* Force background colors in print */
