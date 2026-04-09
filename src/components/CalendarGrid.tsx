@@ -89,7 +89,14 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
         {days.map((day) => {
           const isCurrentMonth = isSameMonth(day, monthStart);
           const isSelected = isSameDay(day, currentDate);
-          const dayEvents = events.filter(e => isSameDay(e.date, day));
+          const dayEvents = events
+            .filter(e => isSameDay(e.date, day))
+            .sort((a, b) => {
+              // Extrai horário do título (formato "HH:mm - ...")
+              const timeA = a.title.match(/^(\d{2}:\d{2})/)?.[1] || '99:99';
+              const timeB = b.title.match(/^(\d{2}:\d{2})/)?.[1] || '99:99';
+              return timeA.localeCompare(timeB);
+            });
 
           return (
             <div
