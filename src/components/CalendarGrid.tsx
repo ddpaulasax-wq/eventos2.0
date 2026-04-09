@@ -28,15 +28,13 @@ interface CalendarGridProps {
   onSelectDay: (day: Date) => void;
   onEditEvent: (event: Event) => void;
   events: Event[];
-  calendarMode: 'geral' | 'cultos';
 }
 
 export const CalendarGrid: React.FC<CalendarGridProps> = ({ 
   currentDate, 
   onSelectDay, 
   onEditEvent, 
-  events,
-  calendarMode
+  events
 }) => {
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(monthStart);

@@ -286,7 +286,6 @@ const App: React.FC = () => {
             onSelectDay={handleSelectDay}
             onEditEvent={handleEditEvent}
             events={visibleEvents}
-            calendarMode={calendarMode}
           />
         )}
         
