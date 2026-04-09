@@ -26,9 +26,9 @@ export const Header: React.FC<HeaderProps> = ({
   onAutoRegister
 }) => {
   return (
-    <header className="fade-in" style={{ marginBottom: '2rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div className="header-info" style={{ display: 'flex', alignItems: 'center', gap: '2rem' }}>
+    <header className="fade-in header-container">
+      <div className="header-top">
+        <div className="header-info">
           <div className="month-year">
             <h1>
               {format(currentDate, 'MMMM', { locale: ptBR })}
@@ -47,16 +47,10 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        <div className="header-controls" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+        <div className="header-controls">
 
           {/* Toggle Calendário */}
-          <div style={{
-            display: 'flex',
-            background: '#F1F5F9',
-            borderRadius: '9999px',
-            padding: '4px',
-            gap: '2px'
-          }}>
+          <div className="toggle-calendar-container">
             <button
               onClick={() => calendarMode !== 'geral' && onToggleMode()}
               style={{
@@ -101,12 +95,11 @@ export const Header: React.FC<HeaderProps> = ({
             onClick={() => window.print()} 
             title="Imprimir"
             translate="no"
-            style={{ minWidth: '110px' }}
           >
-            <Printer size={16} /> Imprimir
+            <Printer size={16} /> <span className="hide-mobile">Imprimir</span>
           </button>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div className="actions-column">
+            <div className="actions-row">
               <button 
                 className="btn-pill" 
                 onClick={onAutoRegister}
@@ -117,10 +110,10 @@ export const Header: React.FC<HeaderProps> = ({
                 }}
                 title={calendarMode === 'cultos' ? "Cadastrar cultos fixos para este mês" : "Cadastrar eventos musicais fixos"}
               >
-                <Wand2 size={18} /> Autocadastro
+                <Wand2 size={18} /> <span className="hide-mobile">Autocadastro</span>
               </button>
               <button className="btn-pill btn-pill-blue" onClick={onAddEvent}>
-                <Plus size={20} /> Novo
+                <Plus size={20} /> <span className="hide-mobile">Novo</span>
               </button>
             </div>
             <span style={{ fontSize: '0.625rem', color: '#CBD5E1', textAlign: 'center' }}>

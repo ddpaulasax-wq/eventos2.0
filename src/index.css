@@ -461,3 +461,127 @@ body {
     print-color-adjust: exact !important;
   }
 }
+
+/* -----------------------------
+   RESPONSIVIDADE MOBILE / APP
+   ----------------------------- */
+
+/* Header Mobile Adjustments */
+.header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.header-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.toggle-calendar-container {
+  display: flex;
+  background: #F1F5F9;
+  border-radius: 9999px;
+  padding: 4px;
+  gap: 2px;
+}
+.actions-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.actions-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  #root {
+    padding: 1rem;
+  }
+  
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .header-info {
+    gap: 1rem;
+  }
+  .month-year h1 {
+    font-size: 1.75rem;
+  }
+  .header-controls {
+    justify-content: flex-start;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .hide-mobile {
+    display: none;
+  }
+  .btn-pill {
+    padding: 0.5rem 1rem;
+  }
+
+  /* Exibir as legendas em grid 2x2 para melhor uso do espaço vertical */
+  .legend-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin: 1rem 0;
+  }
+  
+  /* Reduzir o grid do calendário para caber melhor lateralmente ou permitir scroll natural */
+  .calendar-main-grid {
+    min-width: 100%; /* Remove barra de rolagem horizontal excessiva */
+  }
+  .weekday-label {
+    padding: 0.75rem 0.25rem;
+    font-size: 0.65rem;
+    letter-spacing: normal;
+  }
+  .day-box {
+    min-height: 80px;
+    padding: 0.25rem;
+  }
+  .day-num {
+    width: 24px;
+    height: 24px;
+    font-size: 0.75rem;
+  }
+  .events-list {
+    max-height: none;
+    padding-right: 0;
+  }
+  .event-item-grid {
+    font-size: 0.65rem;
+    padding: 2px 4px;
+    margin-bottom: 2px;
+  }
+  
+  /* Modal de eventos em telas menores */
+  .modal-content {
+    padding: 1rem;
+    margin: 1rem;
+    width: auto;
+  }
+  .form-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
