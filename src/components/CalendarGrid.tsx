@@ -53,7 +53,7 @@ export const CalendarGrid: React.FC<CalendarGridProps> = ({
     const toHide = ['OUTRO', 'OUTROS', 'EVENTO', 'CULTO', 'CULTOS', 'PESSOAL', 'PESSOAIS', 'MEUS EVENTOS', 'EVENTOS DOS CONSERVOS'];
     
     // 2. Quebramos o título por qualquer tipo de traço com espaços
-    const parts = event.title.split(/\s*[\-–—]\s*/);
+    const parts = event.title.split(/\s*[-–—]\s*/);
     
     // 3. Filtramos as partes
     const filtered = parts.filter((part, index) => {

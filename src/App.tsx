@@ -43,13 +43,14 @@ const App: React.FC = () => {
   // Re-carrega eventos ao trocar de calendário
   useEffect(() => {
     fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarMode]);
 
   const fetchEvents = async () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('events')
+        .from('calendar_events')
         .select('*')
         .eq('calendar_type', calendarMode)
         .order('date', { ascending: true })
@@ -95,7 +96,7 @@ const App: React.FC = () => {
     try {
       if (deleteAll && groupId) {
         const { error } = await supabase
-          .from('events')
+          .from('calendar_events')
           .delete()
           .eq('group_id', groupId);
 
@@ -104,7 +105,7 @@ const App: React.FC = () => {
         setEvents(events.filter(e => e.groupId !== groupId));
       } else {
         const { error } = await supabase
-          .from('events')
+          .from('calendar_events')
           .delete()
           .eq('id', id);
 
@@ -132,19 +133,22 @@ const App: React.FC = () => {
       e.date <= monthEnd
     );
 
-    if (hasEventsInMonth) {
-      alert(`Este mês já possui eventos de ${calendarMode === 'cultos' ? 'culto' : 'música'} cadastrados!`);
-      return;
-    }
-
     const typeLabel = calendarMode === 'cultos' ? 'cultos fixos' : 'eventos musicais fixos';
-    if (!confirm(`Deseja cadastrar automaticamente todos os ${typeLabel} para ${format(currentDate, 'MMMM', { locale: ptBR })}?`)) {
-      return;
+    
+    if (hasEventsInMonth) {
+      if (!confirm(`Este mês já possui eventos de ${calendarMode === 'cultos' ? 'culto' : 'música'} cadastrados!\nDeseja prosseguir com o autocadastro mesmo assim? (Isso pode duplicar eventos já cadastrados)`)) {
+        return;
+      }
+    } else {
+      if (!confirm(`Deseja cadastrar automaticamente todos os ${typeLabel} para ${format(currentDate, 'MMMM', { locale: ptBR })}?`)) {
+        return;
+      }
     }
 
     try {
       setLoading(true);
       const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newEventsData: any[] = [];
       const configList = calendarMode === 'cultos' ? FIXED_CULTOS : FIXED_GERAL;
       const eventColor = calendarMode === 'cultos' ? '#000000' : '#EF4444';
@@ -177,14 +181,14 @@ const App: React.FC = () => {
         return;
       }
 
-      const { error } = await supabase.from('events').insert(newEventsData);
+      const { error } = await supabase.from('calendar_events').insert(newEventsData);
       if (error) throw error;
 
       await fetchEvents();
       alert('Eventos cadastrados com sucesso!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in auto-register:', error);
-      alert('Erro ao realizar autocadastro.');
+      alert(`Erro ao realizar autocadastro: ${error?.message || JSON.stringify(error)}`);
     } finally {
       setLoading(false);
     }
@@ -195,7 +199,7 @@ const App: React.FC = () => {
       if (editingEvent) {
         // Update existing
         const { error } = await supabase
-          .from('events')
+          .from('calendar_events')
           .update({ 
             title, 
             description, 
@@ -213,6 +217,7 @@ const App: React.FC = () => {
       }
 
       const groupId = Math.random().toString(36).substr(2, 9);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newEventsData: any[] = [];
       
       let iterations = 1;
@@ -238,12 +243,13 @@ const App: React.FC = () => {
       }
 
       const { data, error } = await supabase
-        .from('events')
+        .from('calendar_events')
         .insert(newEventsData)
         .select();
 
       if (error) throw error;
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const createdEvents = data.map((event: any) => ({
         ...event,
         date: parseISO(event.date),
