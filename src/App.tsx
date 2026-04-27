@@ -259,9 +259,9 @@ const App: React.FC = () => {
 
       setEvents([...events, ...createdEvents]);
       setIsModalOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error adding event:', error);
-      alert('Erro ao salvar compromisso');
+      alert(`Erro ao salvar compromisso: ${error?.message || JSON.stringify(error)}`);
     }
   };
 
